@@ -1,4 +1,4 @@
-import { RacingGame } from "../src/model/RacingGame.js";
-import { $ } from "./utils/dom.js";
+import { RacingCarGame } from "../src/model/RacingCarGame.js";
+import { $ } from "./js/utils/dom.js";
 
-new RacingGame($("#app"));
+new RacingCarGame($("#app"));
