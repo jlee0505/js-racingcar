@@ -1,4 +1,4 @@
-import { DOM, CAR_STATE } from "../constants.js";
+import { DOM, GAME } from "../constants.js";
 
 class ProgressSectionView {
   constructor(target) {
@@ -17,7 +17,7 @@ class ProgressSectionView {
         <div class="car-player">${name}</div>
         ${states
           .map((state) =>
-            result === CAR_STATE.FORWARD ? this.createCarForwardTemplate() : ""
+            result === GAME.FORWARD ? this.createCarForwardTemplate() : ""
           )
           .join("")}
       </div>

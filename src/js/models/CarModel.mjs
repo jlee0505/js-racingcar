@@ -1,6 +1,6 @@
-import { CAR_STATE } from "../../constants.js";
+import { GAME } from "../constants.js";
 
-class Car {
+class CarModel {
   name;
   states;
 
@@ -10,8 +10,8 @@ class Car {
   }
 
   get forwardCount() {
-    return this.states.filter((state) => state === CAR_STATE.FORWARD).length;
+    return this.states.filter((state) => state === GAME.FORWARD).length;
   }
 }
 
-export default Car;
+export default CarModel;
