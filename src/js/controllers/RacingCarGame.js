@@ -1,138 +1,136 @@
-import { addCls, removeCls, warnMsg } from "../utils/utils.js";
-import Player from "../models/Player.js";
+import { CarModel, RacingCarGameModel } from "../models/index.js";
+import {
+  CountFormView,
+  RacingCarGameView,
+  ProgressSectionView,
+  EndSectionView,
+} from "../views/index.js";
+import { nameValidator, countValidator } from "../utils/validators.js";
+import { pickRandomNumInRange } from "../utils/utils.js";
 import { $ } from "../utils/dom.js";
-import { MSG } from "../utils/messages.js";
+import { DOM, GAME } from "../constants.js";
 
-export class RacingCarGame {
-  // constructor(container) {
-  //   this.container = container;
-  //   this.maxNameLength = 5;
-  //   this.players = [];
-  //   this.gameCount = 0;
-  //   this.gameTerm = 1000;
-  //   this.resultAlertTerm = 2000;
-  //   this.setElement();
-  //   this.addEvent();
-  // }
+class RacingCarGame {
   constructor(target) {
-    this.$app = target;
+    this.$target = target;
     this.racingCarGameModel = new RacingCarGameModel();
-    this.racingCarGameView = new this.racingCarGameView(target);
+    this.racingCarGameView = new RacingCarGameView(target);
     this.initGame();
     this.renderView();
   }
-  // setElement() {
-  //   this.nameForm = $(".name-form", this.container);
-  //   this.nameArea = $(".name-area", this.nameForm);
-  //   this.nameInput = $("input", this.nameArea);
-  //   this.nameButton = $("button", this.nameArea);
-  //   this.countForm = $(".count-form", this.container);
-  //   this.countArea = $(".count-area", this.countForm);
-  //   this.countInput = $("input", this.countArea);
-  //   this.countButton = $("button", this.countArea);
-  //   this.playArea = $(".play-area", this.container);
-  //   this.resultArea = $(".result-area", this.container);
-  //   this.resultList = $(".winner-list", this.resultArea);
-  //   this.resultButton = $("button", this.resultArea);
-  // }
-  // addEvent() {
-  //   this.nameForm.addEventListener("submit", this.inputName.bind(this));
-  //   this.nameButton.addEventListener("click", this.inputName.bind(this));
-  //   this.countForm.addEventListener("submit", this.inputCount.bind(this));
-  //   this.countButton.addEventListener("click", this.inputCount.bind(this));
-  //   this.resultButton.addEventListener("click", this.resetGame.bind(this));
-  // }
-  // inputName(e) {
-  //   e.preventDefault();
-  //   const inputValue = this.nameInput.value.trim();
-  //   this.nameInput.value = inputValue;
-  //   if (!inputValue) {
-  //     warnMsg(MSG.INPUT_PLAYER);
-  //     return;
-  //   }
-  //   const names = inputValue.split(",");
-  //   const isInvalidName = names.some(
-  //     (name) => name.trim().length > this.maxNameLength || !name.trim().length
-  //   );
-  //   if (isInvalidName) {
-  //     warnMsg(MSG.MAX_PLAYER);
-  //     return;
-  //   } else {
-  //     this.nameInput.setAttribute("disabled", true);
-  //     this.nameButton.setAttribute("disabled", true);
-  //     removeCls(this.countArea, "hidden");
-  //     names.forEach((name) => this.players.push(new Player(name)));
-  //     this.countInput.focus();
-  //   }
-  // }
-  // inputCount(e) {
-  //   e.preventDefault();
-  //   const inputValue = this.countInput.value;
-  //   if (!inputValue || +inputValue === 0) {
-  //     warnMsg(MSG.INPUT_COUNT);
-  //     return;
-  //   }
-  //   this.gameCount = +inputValue;
-  //   this.countInput.setAttribute("disabled", true);
-  //   this.countButton.setAttribute("disabled", true);
-  //   removeCls(this.playArea, "hidden");
-  //   this.startGame();
-  // }
-  // startGame() {
-  //   this.players.forEach((player) => {
-  //     player.setElement();
-  //     this.playArea.appendChild(player.getElement());
-  //   });
-  //   this.timer = setInterval(this.setPlayerState.bind(this), this.gameTerm);
-  // }
-  // setPlayerState() {
-  //   this.players.forEach((player) => player.setState());
-  //   this.gameCount--;
-  //   if (this.gameCount <= 0) {
-  //     this.endGame();
-  //   }
-  // }
-  // endGame() {
-  //   clearInterval(this.timer);
-  //   let winnerLocation = 0;
-  //   this.players.forEach((player) => {
-  //     if (winnerLocation < player.location) {
-  //       winnerLocation = player.location;
-  //     }
-  //     player.endGame();
-  //   });
-  //   this.winner = this.players.filter(
-  //     (player) => player.location === winnerLocation
-  //   );
-  //   this.setWinner();
-  // }
-  // setWinner() {
-  //   removeCls(this.resultArea, "hidden");
-  //   this.resultList.textContent = this.winner.map((player) => player.name);
-  //   setTimeout(() => alert(MSG.CONGRATULATIONS), this.resultAlertTerm);
-  // }
-  // resetGame() {
-  //   this.resetNameArea();
-  //   this.resetCountArea();
-  //   this.resetPlayArea();
-  //   this.resetResultArea();
-  // }
-  // resetNameArea() {
-  //   this.nameInput.removeAttribute("disabled");
-  //   this.nameButton.removeAttribute("disabled");
-  //   this.nameInput.value = null;
-  // }
-  // resetCountArea() {
-  //   this.countInput.removeAttribute("disabled");
-  //   this.countButton.removeAttribute("disabled");
-  //   this.countInput.value = null;
-  //   addCls(this.countArea, "hidden");
-  // }
-  // resetPlayArea() {
-  //   this.playArea.innerHTML = null;
-  //   addCls(this.playArea, "hidden");
-  // }
-  // resetResultArea() {
-  //   addCls(this.resultArea, "hidden");
-  // }
+
+  initGame() {
+    this.racingCarGameView.render();
+    this.racingCarGameView.focusOnCarNameInput();
+    this.addEvent();
+  }
+
+  mounted() {
+    this.countFormView = new CountFormView($(DOM.INPUT_SECTION.COUNT_FORM));
+    this.progressSectionView = new ProgressSectionView(
+      $(DOM.PLAY_SECTION.PLAY_AREA)
+    );
+    this.resultSectionView = new this.resultSectionView(
+      $(DOM.RESULT_SECTION.RESULT_AREA)
+    );
+  }
+
+  addEvent() {
+    $("#app").addEventListener("submit", (e) => {
+      e.preventDefault();
+      this.onSubmitRacingGame();
+    });
+    $("#app").addEventListener("click", (e) => {
+      this.onClickRacingGame(e.target);
+    });
+  }
+
+  onSubmitRacingGame(submitter) {
+    if (submitter === $(DOM.INPUT_SECTION.NAME_BUTTON)) {
+      this.generateCarWithName();
+      return;
+    }
+    if (submitter === $(DOM.INPUT_SECTION.COUNT_BUTTON)) {
+      this.progressWithCount();
+      return;
+    }
+  }
+
+  onClickRacingGame(target) {
+    if (target === $(DOM.RESULT_SECTION.REPLAY_BUTTON)) {
+      this.restartGame();
+      return;
+    }
+  }
+
+  generateCarWithName() {
+    const carNames = this.racingCarGameView.$carNamesInput.value;
+
+    try {
+      this.validateCarNames(carNames);
+    } catch (error) {
+      alert(error.message);
+      this.racingCarGameView.focusOnCarNameInput;
+      return;
+    }
+
+    this.generateCars(carNames);
+
+    this.CountFormView.render();
+  }
+
+  validateCarNames(carNames) {
+    nameValidator.isEntered(carNames);
+    nameValidator.isShorterThanFiveLetters(carNames);
+  }
+
+  generateCars(carNames) {
+    const cars = carNames
+      .split(",")
+      .map((carName) => new CarModel(carName.trim()));
+    this.racingCarGameModel.cars = cars;
+  }
+
+  progressWithCount() {
+    this.racingCarGameModel.count = $(DOM.INPUT_SECTION.COUNT_INPUT).value;
+
+    try {
+      this.validateCount();
+    } catch (error) {
+      alert(error.message);
+      this.countFormView.focusTryCountInput();
+      return;
+    }
+
+    this.progressRacingResult();
+    this.progressSectionView.render(this.racingCarGameModel.cars);
+    this.resultSectionView.render($(DOM.RESULT_SECTION.RESULT_AREA));
+  }
+
+  validateCount() {
+    countValidator.isEntered(this.racingCarGameModel.count);
+    countValidator.isValidNum(this.racingCarGameModel.count);
+  }
+
+  progressRacingResult() {
+    this.racingCarGameModel.cars.forEach((car) => {
+      car.states = Array.from({ length: this.racingCarGameModel.count }).map(
+        () => {
+          pickRandomNumInRange(GAME.RANDOM_MIN_NUM, GAME.RANDOM_MAX_NUM) >=
+          GAME.FORWARD_STANDARD
+            ? GAME.FORWARD
+            : GAME.STOP;
+        }
+      );
+    });
+  }
+
+  restartGame() {
+    this.resultSectionView.reset();
+    this.progressSectionView.reset();
+    this.countFormView.reset();
+    this.racingCarGameView.reset();
+  }
 }
+
+export default RacingCarGame;
