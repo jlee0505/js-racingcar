@@ -2,6 +2,8 @@ import { DOM } from "../constants.js";
 import { $ } from "../utils/dom.js";
 
 class RacingCarGameView {
+  $carNamesInput;
+
   constructor(target) {
     this.$target = target;
     this.render();
@@ -13,7 +15,7 @@ class RacingCarGameView {
   }
 
   mounted() {
-    this.$carNamesInput = $(`${DOM.INPUT_SECTION.NAME_INPUT}`);
+    this.$carNamesInput = $(DOM.INPUT_SECTION.NAME_INPUT);
   }
 
   focusOnCarNameInput() {
@@ -37,7 +39,7 @@ class RacingCarGameView {
                 </p>
                 <div class="d-flex">
                 <input id="${DOM.INPUT_SECTION.NAME_INPUT}" type="text" class="w-100 mr-2" placeholder="자동차 이름" />
-                <button type="button" class="btn btn-cyan">확인</button>
+                <button id-"${DOM.INPUT_SECTION.NAME_BUTTON}" type="button" class="btn btn-cyan">확인</button>
                 </div>
             </fieldset>
             </form>

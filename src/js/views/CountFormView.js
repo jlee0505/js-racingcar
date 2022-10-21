@@ -1,3 +1,5 @@
+import { DOM } from "../constants";
+
 class CountFormView {
   constructor(target) {
     this.$target = target;
@@ -10,7 +12,7 @@ class CountFormView {
   }
 
   mounted() {
-    this.$countInput = $(`${DOM.INPUT_SECTION.COUNT_INPUT}`);
+    this.$countInput = $(DOM.INPUT_SECTION.COUNT_INPUT);
   }
 
   focusTryCountInput() {
@@ -26,7 +28,7 @@ class CountFormView {
         <p>시도할 횟수를 입력해주세요.</p>
         <div class="d-flex">
           <input type="number" class="w-100 mr-2" placeholder="시도 횟수" />
-          <button type="button" class="btn btn-cyan">확인</button>
+          <button id="${DOM.INPUT_SECTION.COUNT_BUTTON}" type="button" class="btn btn-cyan">확인</button>
         </div>
     `;
   }
