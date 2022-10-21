@@ -1,11 +1,4 @@
-import RacingCarGameView from "./RacingCarGameView.js";
-import ProgressSectionView from "./ProgressSectionView.js";
-import EndSectionView from "./EndSectionView.js";
-import CountFormView from "./CountFormView.js";
-
-export {
-  RacingCarGameView,
-  ProgressSectionView,
-  EndSectionView,
-  CountFormView,
-};
+export { default as RacingCarGameView } from "./RacingCarGameView.js";
+export { default as ProgressSectionView } from "./ProgressSectionView.js";
+export { default as EndSectionView } from "./EndSectionView.js";
+export { default as CountFormView } from "./CountFormView.js";
